@@ -1,0 +1,97 @@
+﻿@model IEnumerable<SmokerTesterProto1.Models.TestSuite>
+
+@{
+    ViewBag.Title = "Test Suites";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@*<link type="text/css" href="~/Content/css/redmond/jquery-ui-1.9.0.custom.css" rel="Stylesheet" />
+<script type="text/javascript" src="~/Scripts/jquery-1.8.2.js"></script>*@
+<script type="text/javascript" src="~/Scripts/jquery-ui-1.9.0.custom.min.js"></script>
+
+<script>
+	$(function () {
+	    //$("#radio").buttonset();
+	    $("#tabs").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
+	    $("#tabs li").removeClass("ui-corner-top").addClass("ui-corner-left");
+	    $("#overall-progressbar").progressbar();
+	    $("#start-button").button().click(function () {
+	        $('.testcase').each(function (index, value) {
+	            $.ajax({
+	                url: $(value).attr("href"),
+	                dataType: 'json',
+	                async: false,
+	                success: function (data) {
+	                    $(value).switchClass("testcase", "successTestCase", 1000)
+	                },
+	                error: function () {
+	                    $(value).switchClass("testcase", "failedTestCase", 1000)
+	                },
+	                complete: function () {
+	                    var progress = index * 10;
+	                    $("#overall-progressbar").progressbar({
+	                        value: progress
+	                    });
+	                    $(this).delay(500);
+	                }
+	            });
+	            //$.getJSON($(value).attr("href"), function(data)
+	            //    {
+	            //        $(value).switchClass("testcase", "successTestCase", 1000)
+    	        //    })
+	            //    .error(function ()
+	            //    {
+	            //        $(value).switchClass("testcase", "failedTestCase", 1000)
+	            //    })
+	            //    .complete(function()
+	            //    {
+	            //        var progress = index * 10;
+	            //        $("#overall-progressbar").progressbar({
+	            //            value: progress
+	            //        });
+	            //    });
+	        });
+	    });
+	});
+</script>
+<style>
+.testcase { background-color: blue; }
+.successTestCase { background-color: green; }
+.failedTestCase { background-color: red; }
+</style>
+<style>
+.ui-tabs-vertical { width: 55em; }
+.ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 12em; }
+.ui-tabs-vertical .ui-tabs-nav li { clear: left; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .2em 0; }
+.ui-tabs-vertical .ui-tabs-nav li a { display:block; }
+.ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; border-right-width: 1px; }
+.ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: right; width: 40em;}
+</style>
+
+<div id="body">
+    <section class="content-wrapper main-content clear-fix">
+        <h2>@ViewBag.Title</h2>
+        <div style="margin-top: 20px;">
+            <div style="width: 80px; float: left;">
+                <a href="#" id="start-button">Start</a>
+            </div>
+            <div id="overall-progressbar" style="margin-left: 90px;"></div>
+        </div>
+        <div id="tabs" class="testsuites">
+            <ul>
+                @foreach (var testSuite in Model)
+                {
+                <li><a href="#tabs-@testSuite.Id">@testSuite.Name</a></li>
+                }
+            </ul>
+            @foreach (var testSuite in Model)
+            {
+            <div id="tabs-@testSuite.Id">
+                @foreach (var test in testSuite.Tests)
+                {
+                <a class="testcase" href="@test.Uri">@test.Description</a>
+                }
+            </div>
+            }
+        </div>
+    </section>
+</div>

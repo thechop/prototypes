@@ -1,0 +1,37 @@
+﻿@model IEnumerable<SmokerTesterProto1.Models.TestSuite>
+
+@{
+    ViewBag.Title = "Test Suites";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@*<script src="~scripts/jquery.ui.button.js"></script>*@
+<script>
+    $(function() {
+        $( "#radio" ).buttonset();
+    });
+</script>
+<div id="body">
+    <section class="content-wrapper main-content clear-fix">
+        <h2>@ViewBag.Title</h2>
+            <input type="radio" id="radio1" name="radio" /><label for="radio1"Choice 1</label>
+            <input type="radio" id="radio2" name="radio" checked="checked" /><label for="radio2"Choice 2</label>
+            <input type="radio" id="radio3" name="radio" /><label for="radio3"Choice 3</label>
+        </div>
+        <table>
+            <tr>
+                <th></th>
+            </tr>
+
+        @foreach (var item in Model) {
+            <h3>@item.Name</h3>
+            <ol>
+                @foreach (var test in item.Tests) {
+                    <li>
+                        <h5>@test</h5>
+                    </li>
+                }
+            </ol>
+        }
+        </table>
+    </section>
+</div>
